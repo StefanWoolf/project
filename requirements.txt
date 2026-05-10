@@ -1,0 +1,48 @@
+# ============================================================
+# requirements.txt — Рекомендательная система фильмов (MovieLens)
+# Python 3.12  |  Проверено: конец 2025 / начало 2026
+# ============================================================
+
+# ── DATA ────────────────────────────────────────────────────
+numpy>=2.1,<2.3          # критично для TF и scikit-learn совместимости
+scipy>=1.14,<1.16
+pandas>=2.2,<2.3
+pyarrow>=18.0,<19.0      # parquet I/O для pandas
+
+# ── ML — SKLEARN & FEATURE ENGINEERING ─────────────────────
+scikit-learn>=1.5,<1.7
+
+# ── ML — COLLABORATIVE FILTERING (Surprise) ─────────────────
+scikit-surprise>=1.1.4,<1.2.0
+
+# ── ML — GRADIENT BOOSTING ──────────────────────────────────
+lightgbm>=4.5,<4.7
+
+# ── ML — HYBRID (LightFM) ───────────────────────────────────
+# Требует C-компилятор; на Windows — Visual Studio Build Tools
+lightfm>=1.16,<1.18
+
+# ── ML — DEEP LEARNING (TensorFlow / Keras 3) ───────────────
+# Keras 3 встроен в TF >= 2.15; enable_op_determinism — с 2.10
+tensorflow>=2.18,<2.20
+
+# ── HYPERPARAMETER OPTIMIZATION ─────────────────────────────
+optuna>=4.1,<4.3
+plotly>=5.24,<6.0        # нужен для Optuna визуализаций
+
+# ── VISUALIZATION ───────────────────────────────────────────
+matplotlib>=3.9,<3.11
+seaborn>=0.13,<0.14
+
+# ── JUPYTER ─────────────────────────────────────────────────
+jupyter>=1.1,<1.3
+ipykernel>=6.29,<6.31
+nbformat>=5.10,<5.11     # для программной генерации ноутбуков
+nbconvert>=7.16,<7.17
+
+# ── STREAMLIT (шаг 11) ──────────────────────────────────────
+streamlit>=1.41,<1.43
+
+# ── UTILS ───────────────────────────────────────────────────
+joblib>=1.4,<1.5         # сериализация sklearn/surprise/lgbm моделей
+tqdm>=4.67,<4.68         # прогресс-бары (Optuna show_progress_bar)
