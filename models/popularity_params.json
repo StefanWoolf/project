@@ -1,0 +1,16 @@
+{
+  "random_state": 29042005,
+  "best_m": 200.0,
+  "m_grid": [
+    0.0,
+    1.0,
+    5.0,
+    10.0,
+    20.0,
+    50.0,
+    100.0,
+    200.0
+  ],
+  "relevance_threshold": 4.0,
+  "final_train_strategy": "train + val concatenated"
+}

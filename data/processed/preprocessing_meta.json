@@ -1,0 +1,40 @@
+{
+  "random_state": 29042005,
+  "min_user_ratings": 5,
+  "min_movie_ratings": 2,
+  "split_strategy": "temporal_global_quantile",
+  "split_ratios": {
+    "train": 0.7,
+    "val": 0.15,
+    "test": 0.15
+  },
+  "n_users": 610,
+  "n_movies": 5446,
+  "n_train": 68829,
+  "n_val": 12289,
+  "n_test": 11728,
+  "n_cold_start": 4544,
+  "sparsity": 0.9792812291168733,
+  "tfidf_max_features": 200,
+  "genre_classes": [
+    "Action",
+    "Adventure",
+    "Animation",
+    "Children",
+    "Comedy",
+    "Crime",
+    "Documentary",
+    "Drama",
+    "Fantasy",
+    "Film-Noir",
+    "Horror",
+    "IMAX",
+    "Musical",
+    "Mystery",
+    "Romance",
+    "Sci-Fi",
+    "Thriller",
+    "War",
+    "Western"
+  ]
+}

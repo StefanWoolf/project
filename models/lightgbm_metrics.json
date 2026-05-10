@@ -1,0 +1,141 @@
+{
+  "baseline": {
+    "val": {
+      "rmse": 0.9736582277951906,
+      "mae": 0.7411387185384775
+    }
+  },
+  "final": {
+    "val_best_rmse": 0.9544335997094046,
+    "test_rating": {
+      "rmse": 1.060507049750515,
+      "mae": 0.8332414359899947
+    },
+    "test_topn": {
+      "precision@5": 0.08979591836734693,
+      "recall@5": 0.01318297037527413,
+      "ndcg@5": 0.095736387578259,
+      "hit_rate@5": 0.35714285714285715,
+      "precision@10": 0.07244897959183673,
+      "recall@10": 0.02502756693347502,
+      "ndcg@10": 0.08315151873638763,
+      "hit_rate@10": 0.42857142857142855,
+      "precision@20": 0.06785714285714285,
+      "recall@20": 0.04099782055361802,
+      "ndcg@20": 0.08061810480125484,
+      "hit_rate@20": 0.5408163265306123,
+      "coverage@20": 0.05967682702901212
+    }
+  },
+  "feature_importance_top20": [
+    {
+      "feature": "movie_mean_rating_train",
+      "importance_gain": 30803.19516968727,
+      "importance_split": 77
+    },
+    {
+      "feature": "user_mean_rating_train",
+      "importance_gain": 3691.6344265937805,
+      "importance_split": 30
+    },
+    {
+      "feature": "user_std_rating_train",
+      "importance_gain": 3347.541203856468,
+      "importance_split": 69
+    },
+    {
+      "feature": "user_active_days_train",
+      "importance_gain": 2223.5672342181206,
+      "importance_split": 117
+    },
+    {
+      "feature": "user_n_ratings_train",
+      "importance_gain": 1724.5819316506386,
+      "importance_split": 62
+    },
+    {
+      "feature": "movie_std_rating_train",
+      "importance_gain": 443.9233388751745,
+      "importance_split": 53
+    },
+    {
+      "feature": "movie_n_ratings_train",
+      "importance_gain": 183.7430897653103,
+      "importance_split": 21
+    },
+    {
+      "feature": "movie_year",
+      "importance_gain": 131.14872980117798,
+      "importance_split": 13
+    },
+    {
+      "feature": "tag_svd_0",
+      "importance_gain": 39.738200187683105,
+      "importance_split": 3
+    },
+    {
+      "feature": "tag_svd_9",
+      "importance_gain": 33.174519777297974,
+      "importance_split": 4
+    },
+    {
+      "feature": "tag_svd_10",
+      "importance_gain": 24.170130252838135,
+      "importance_split": 2
+    },
+    {
+      "feature": "tag_svd_18",
+      "importance_gain": 23.68798738718033,
+      "importance_split": 5
+    },
+    {
+      "feature": "tag_svd_1",
+      "importance_gain": 19.45021963119507,
+      "importance_split": 3
+    },
+    {
+      "feature": "genre_Romance",
+      "importance_gain": 19.099300384521484,
+      "importance_split": 1
+    },
+    {
+      "feature": "tag_svd_13",
+      "importance_gain": 17.342429637908936,
+      "importance_split": 2
+    },
+    {
+      "feature": "genre_Action",
+      "importance_gain": 17.035619735717773,
+      "importance_split": 2
+    },
+    {
+      "feature": "genre_Drama",
+      "importance_gain": 15.31760025024414,
+      "importance_split": 1
+    },
+    {
+      "feature": "tag_svd_3",
+      "importance_gain": 15.214799880981445,
+      "importance_split": 1
+    },
+    {
+      "feature": "tag_svd_16",
+      "importance_gain": 13.947799682617188,
+      "importance_split": 1
+    },
+    {
+      "feature": "tag_svd_19",
+      "importance_gain": 13.503399848937988,
+      "importance_split": 1
+    }
+  ],
+  "meta": {
+    "k_values": [
+      5,
+      10,
+      20
+    ],
+    "relevance_threshold": 4.0,
+    "optuna_n_trials": 50
+  }
+}

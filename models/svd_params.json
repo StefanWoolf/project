@@ -1,0 +1,19 @@
+{
+  "random_state": 29042005,
+  "best_params": {
+    "n_factors": 103,
+    "n_epochs": 11,
+    "lr_all": 0.012807180690589936,
+    "reg_all": 0.05310176532722622,
+    "biased": true
+  },
+  "optuna_n_trials": 50,
+  "optuna_sampler": "TPESampler",
+  "optuna_direction": "minimize",
+  "optuna_target": "rmse@val",
+  "final_train_strategy": "train + val concatenated",
+  "baseline_train_time_sec": 0.29413580894470215,
+  "optuna_search_time_sec": 14.375995635986328,
+  "final_train_time_sec": 0.22425556182861328,
+  "inference_time_test_topn_sec": 1.4019749164581299
+}

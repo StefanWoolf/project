@@ -1,0 +1,59 @@
+{
+  "random_state": 29042005,
+  "criteria": {
+    "best_for_rating_prediction": {
+      "model": "KNN",
+      "metric": "rmse",
+      "value": 1.019039945175648
+    },
+    "best_for_topn_ranking": {
+      "model": "ALS (hybrid)",
+      "metric": "ndcg@10",
+      "value": 0.25194196870954333
+    },
+    "best_combined": {
+      "model": "NCF",
+      "rmse": 1.0435087263997542,
+      "ndcg@10": 0.1093094749635238,
+      "rank_sum": 3.0
+    }
+  },
+  "streamlit_default": {
+    "recommendation_model": "ALS (hybrid)",
+    "rationale": "Выбрана модель с лучшим NDCG@10, поскольку Streamlit-сценарий — выдача персонализированного топ-N списка фильмов. Для холодного старта (пользователь не в train) — фолбэк на Popularity."
+  },
+  "all_model_rankings": [
+    {
+      "model": "NCF",
+      "rmse": 1.0435,
+      "ndcg@10": 0.1093,
+      "rank_rmse": 2.0,
+      "rank_ndcg": 1.0,
+      "rank_sum": 3.0
+    },
+    {
+      "model": "SVD",
+      "rmse": 1.057,
+      "ndcg@10": 0.0875,
+      "rank_rmse": 3.0,
+      "rank_ndcg": 2.0,
+      "rank_sum": 5.0
+    },
+    {
+      "model": "KNN",
+      "rmse": 1.019,
+      "ndcg@10": 0.048,
+      "rank_rmse": 1.0,
+      "rank_ndcg": 4.0,
+      "rank_sum": 5.0
+    },
+    {
+      "model": "LightGBM",
+      "rmse": 1.0605,
+      "ndcg@10": 0.0832,
+      "rank_rmse": 4.0,
+      "rank_ndcg": 3.0,
+      "rank_sum": 7.0
+    }
+  ]
+}

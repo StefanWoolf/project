@@ -1,0 +1,31 @@
+{
+  "random_state": 29042005,
+  "best_params": {
+    "gmf_dim": 48,
+    "mlp_emb_dim": 16,
+    "mlp_n_layers": 4,
+    "mlp_first_dim": 80,
+    "dropout": 0.10004493911726475,
+    "l2_reg": 8.7006926726387e-07,
+    "learning_rate": 0.001891398355188011,
+    "batch_size": 256
+  },
+  "best_epoch": 3,
+  "best_mlp_hidden": [
+    80,
+    40,
+    20,
+    10
+  ],
+  "optuna_n_trials": 30,
+  "optuna_n_trials_note": "Установлено 30 (вместо 50) из-за времени обучения NCF на CPU; обосновано в markdown раздела 5",
+  "optuna_sampler": "TPESampler",
+  "optuna_direction": "minimize",
+  "optuna_target": "rmse@val",
+  "final_train_strategy": "train+val; epochs=best_epoch (без EarlyStopping)",
+  "tf_version": "2.18.0",
+  "baseline_train_time_sec": 17.628852128982544,
+  "optuna_search_time_sec": 836.3365881443024,
+  "final_train_time_sec": 9.707271099090576,
+  "inference_time_test_topn_sec": 15.989564657211304
+}
