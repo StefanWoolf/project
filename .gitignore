@@ -1,0 +1,27 @@
+# Виртуальное окружение (ЭТО ГЛАВНОЕ!)
+.coursework-project/
+venv/
+env/
+.venv/
+
+# Модели (большие бинарники)
+*.pkl
+*.joblib
+*.h5
+*.keras
+*.pb
+*.sav
+
+# Данные (тяжёлые)
+*.parquet
+*.npz
+*.npy
+*.arrow
+data/raw/
+data/processed/*.parquet
+data/processed/*.npz
+
+# Кэш Python
+__pycache__/
+*.pyc
+*.pyo
