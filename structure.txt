@@ -1,0 +1,93 @@
+﻿├── 📁 data
+│   ├── 📁 processed
+│   │   ├── 📄 anomalous_users_eda.txt
+│   │   ├── 📄 cold_start_eval.parquet
+│   │   ├── 📄 genre_features.parquet
+│   │   ├── 📄 movies_enriched.parquet
+│   │   ├── 📄 movie_features.parquet
+│   │   ├── 📄 preprocessing_meta.json
+│   │   ├── 📄 tag_features.npz
+│   │   ├── 📄 tag_movie_order.parquet
+│   │   ├── 📄 test.parquet
+│   │   ├── 📄 train.parquet
+│   │   ├── 📄 user_features.parquet
+│   │   ├── 📄 user_item_train.npz
+│   │   └── 📄 val.parquet
+│   └── 📁 raw
+│       ├── 📄 links.csv
+│       ├── 📄 movies.csv
+│       ├── 📄 ratings.csv
+│       └── 📄 tags.csv
+├── 📁 models
+│   ├── 📄 best_model_decision.json
+│   ├── 📄 comparison_optuna_convergence.html
+│   ├── 📄 comparison_quality_vs_time.html
+│   ├── 📄 comparison_radar.html
+│   ├── 📄 comparison_качество.html
+│   ├── 📄 comparison_покрытие.html
+│   ├── 📄 genre_encoder.pkl
+│   ├── 📄 global_mean_model.pkl
+│   ├── 📄 inv_movie_id_map.pkl
+│   ├── 📄 inv_user_id_map.pkl
+│   ├── 📄 knn_metrics.json
+│   ├── 📄 knn_model.pkl
+│   ├── 📄 knn_optuna_trials.parquet
+│   ├── 📄 knn_params.json
+│   ├── 📄 lightfm_content_svd.pkl
+│   ├── 📄 lightfm_item_features.npz
+│   ├── 📄 lightfm_metrics.json
+│   ├── 📄 lightfm_model.pkl
+│   ├── 📄 lightfm_optuna_trials.parquet
+│   ├── 📄 lightfm_params.json
+│   ├── 📄 lightgbm_metrics.json
+│   ├── 📄 lightgbm_model.pkl
+│   ├── 📄 lightgbm_optuna_trials.parquet
+│   ├── 📄 lightgbm_params.json
+│   ├── 📄 metrics_summary.parquet
+│   ├── 📄 movie_id_map.pkl
+│   ├── 📄 movie_scaler.pkl
+│   ├── 📄 ncf_metrics.json
+│   ├── 📄 ncf_model.keras
+│   ├── 📄 ncf_optuna_trials.parquet
+│   ├── 📄 ncf_params.json
+│   ├── 📄 optuna_knn_history.html
+│   ├── 📄 optuna_knn_importance.html
+│   ├── 📄 optuna_lightfm_history.html
+│   ├── 📄 optuna_lightfm_importance.html
+│   ├── 📄 optuna_lightgbm_history.html
+│   ├── 📄 optuna_lightgbm_importance.html
+│   ├── 📄 optuna_ncf_history.html
+│   ├── 📄 optuna_ncf_importance.html
+│   ├── 📄 optuna_svd_history.html
+│   ├── 📄 optuna_svd_importance.html
+│   ├── 📄 popularity_metrics.json
+│   ├── 📄 popularity_model.pkl
+│   ├── 📄 popularity_params.json
+│   ├── 📄 svd_metrics.json
+│   ├── 📄 svd_model.pkl
+│   ├── 📄 svd_optuna_trials.parquet
+│   ├── 📄 svd_params.json
+│   ├── 📄 tag_svd.pkl
+│   ├── 📄 tfidf_tags.pkl
+│   ├── 📄 user_id_map.pkl
+│   └── 📄 user_scaler.pkl
+├── 📁 notebooks
+│   ├── 📄 01_data_overview.ipynb
+│   ├── 📄 02_eda.ipynb
+│   ├── 📄 03_preprocessing.ipynb
+│   ├── 📄 04_model_popularity.ipynb
+│   ├── 📄 05_model_svd.ipynb
+│   ├── 📄 06_model_knn.ipynb
+│   ├── 📄 07_model_lightgbm.ipynb
+│   ├── 📄 08_model_implicit_als.ipynb
+│   ├── 📄 09_model_ncf.ipynb
+│   └── 📄 10_final_comparison.ipynb
+├── 📁 src
+│   ├── 📄 data_io.py
+│   ├── 📄 metrics.py
+│   ├── 📄 preprocessing.py
+│   └── 📄 utils.py
+├── 📁 streamlit
+│   └── 📄 app.py
+├── 📄 requirements.txt
+└── 📄 structure.txt
