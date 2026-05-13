@@ -1,19 +1,19 @@
 {
   "random_state": 29042005,
   "best_params": {
-    "n_factors": 103,
-    "n_epochs": 11,
-    "lr_all": 0.012807180690589936,
-    "reg_all": 0.05310176532722622,
-    "biased": true
+    "n_factors": 31,
+    "n_epochs": 21,
+    "lr_all": 0.0010631630122113181,
+    "reg_all": 0.002600602539666755
   },
-  "optuna_n_trials": 50,
+  "optuna_n_trials": 30,
   "optuna_sampler": "TPESampler",
   "optuna_direction": "minimize",
-  "optuna_target": "rmse@val",
+  "optuna_target": "-ndcg@10 on val",
+  "relevance_threshold": 3.5,
   "final_train_strategy": "train + val concatenated",
-  "baseline_train_time_sec": 0.29413580894470215,
-  "optuna_search_time_sec": 14.375995635986328,
-  "final_train_time_sec": 0.22425556182861328,
-  "inference_time_test_topn_sec": 1.4019749164581299
+  "baseline_train_time_sec": 0.85605788230896,
+  "optuna_search_time_sec": 191.8154537677765,
+  "final_train_time_sec": 0.46395015716552734,
+  "inference_time_test_topn_sec": 3.492565631866455
 }

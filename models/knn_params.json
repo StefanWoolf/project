@@ -1,19 +1,20 @@
 {
   "random_state": 29042005,
   "best_params": {
-    "user_based": false,
-    "sim_name": "pearson_baseline",
-    "k": 76,
-    "min_k": 5,
-    "min_support": 2
+    "k": 46,
+    "min_k": 3,
+    "min_support": 6
   },
-  "optuna_n_trials": 50,
+  "fixed_user_based": false,
+  "fixed_sim_name": "cosine",
+  "optuna_n_trials": 20,
   "optuna_sampler": "TPESampler",
   "optuna_direction": "minimize",
-  "optuna_target": "rmse@val",
+  "optuna_target": "-ndcg@10 on val",
+  "relevance_threshold": 3.5,
   "final_train_strategy": "train + val concatenated",
-  "baseline_train_time_sec": 6.129179954528809,
-  "optuna_search_time_sec": 197.12956142425537,
-  "final_train_time_sec": 4.977586507797241,
-  "inference_time_test_topn_sec": 38.53929829597473
+  "baseline_train_time_sec": 4.71754789352417,
+  "optuna_search_time_sec": 1090.0388054847717,
+  "final_train_time_sec": 5.070635080337524,
+  "inference_time_test_topn_sec": 38.16465997695923
 }

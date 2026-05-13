@@ -33,12 +33,6 @@
 │   ├── 📄 knn_model.pkl
 │   ├── 📄 knn_optuna_trials.parquet
 │   ├── 📄 knn_params.json
-│   ├── 📄 lightfm_content_svd.pkl
-│   ├── 📄 lightfm_item_features.npz
-│   ├── 📄 lightfm_metrics.json
-│   ├── 📄 lightfm_model.pkl
-│   ├── 📄 lightfm_optuna_trials.parquet
-│   ├── 📄 lightfm_params.json
 │   ├── 📄 lightgbm_metrics.json
 │   ├── 📄 lightgbm_model.pkl
 │   ├── 📄 lightgbm_optuna_trials.parquet
@@ -70,7 +64,7 @@
 │   ├── 📄 tag_svd.pkl
 │   ├── 📄 tfidf_tags.pkl
 │   ├── 📄 user_id_map.pkl
-│   └── 📄 user_scaler.pkl
+│   └── 📄 и др модели.
 ├── 📁 notebooks
 │   ├── 📄 01_data_overview.ipynb
 │   ├── 📄 02_eda.ipynb
@@ -81,7 +75,8 @@
 │   ├── 📄 07_model_lightgbm.ipynb
 │   ├── 📄 08_model_implicit_als.ipynb
 │   ├── 📄 09_model_ncf.ipynb
-│   └── 📄 10_final_comparison.ipynb
+│   ├── 📄 10_ensemble_als_svd_ncf.ipynb
+│   └── 📄 11_final_comparison.ipynb
 ├── 📁 src
 │   ├── 📄 data_io.py
 │   ├── 📄 metrics.py

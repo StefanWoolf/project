@@ -69,8 +69,8 @@
   ],
   "tag_svd_components": 20,
   "tag_svd_explained_variance": 0.34185039065034156,
-  "baseline_train_time_sec": 1.2395784854888916,
-  "optuna_search_time_sec": 36.2335901260376,
-  "final_train_time_sec": 0.35298871994018555,
-  "inference_time_test_topn_sec": 1.6987097263336182
+  "baseline_train_time_sec": 0.6131062507629395,
+  "optuna_search_time_sec": 37.53918647766113,
+  "final_train_time_sec": 0.5280117988586426,
+  "inference_time_test_topn_sec": 1.8933062553405762
 }

@@ -1,0 +1,27 @@
+{
+  "random_state": 29042005,
+  "best_params": {
+    "factors": 48,
+    "iterations": 20,
+    "regularization": 0.0005793138309649968,
+    "use_content_init": false
+  },
+  "best_epochs": 20,
+  "model_class": "implicit.AlternatingLeastSquares",
+  "note": "implicit.ALS used instead of LightFM (no Windows wheels for Py3.12)",
+  "optuna_n_trials": 50,
+  "optuna_sampler": "TPESampler",
+  "optuna_direction": "maximize",
+  "optuna_target": "ndcg@10@val",
+  "final_train_strategy": "train+val concatenated",
+  "relevance_threshold": 3.5,
+  "n_users": 610,
+  "n_movies": 5446,
+  "content_svd_components": 32,
+  "n_genre_features": 19,
+  "n_tag_features": 200,
+  "baseline_train_time_sec": 0.5165402889251709,
+  "optuna_search_time_sec": 39.55721569061279,
+  "final_train_time_sec": 0.6342172622680664,
+  "inference_time_test_topn_sec": 0.07396650314331055
+}

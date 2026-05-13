@@ -3,29 +3,29 @@
   "best_params": {
     "gmf_dim": 48,
     "mlp_emb_dim": 16,
-    "mlp_n_layers": 4,
-    "mlp_first_dim": 80,
-    "dropout": 0.10004493911726475,
-    "l2_reg": 8.7006926726387e-07,
-    "learning_rate": 0.001891398355188011,
+    "mlp_n_layers": 3,
+    "mlp_first_dim": 96,
+    "dropout": 0.2652890499078175,
+    "l2_reg": 5.836610793876892e-06,
+    "learning_rate": 0.003266060495499992,
     "batch_size": 256
   },
-  "best_epoch": 3,
+  "best_epoch": 2,
   "best_mlp_hidden": [
-    80,
-    40,
-    20,
-    10
+    96,
+    48,
+    24
   ],
   "optuna_n_trials": 30,
-  "optuna_n_trials_note": "Установлено 30 (вместо 50) из-за времени обучения NCF на CPU; обосновано в markdown раздела 5",
+  "optuna_n_trials_note": "Установлено 30 из-за стоимости обучения NCF на CPU; обосновано в markdown раздела 5",
   "optuna_sampler": "TPESampler",
   "optuna_direction": "minimize",
-  "optuna_target": "rmse@val",
+  "optuna_target": "-ndcg@10 on val",
   "final_train_strategy": "train+val; epochs=best_epoch (без EarlyStopping)",
+  "relevance_threshold": 3.5,
   "tf_version": "2.18.0",
-  "baseline_train_time_sec": 17.628852128982544,
-  "optuna_search_time_sec": 836.3365881443024,
-  "final_train_time_sec": 9.707271099090576,
-  "inference_time_test_topn_sec": 15.989564657211304
+  "baseline_train_time_sec": 16.931368112564087,
+  "optuna_search_time_sec": 1754.1262969970703,
+  "final_train_time_sec": 7.54123330116272,
+  "inference_time_test_topn_sec": 17.030932426452637
 }

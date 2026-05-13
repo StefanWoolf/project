@@ -1,0 +1,37 @@
+{
+  "models": [
+    "ALS",
+    "SVD",
+    "NCF"
+  ],
+  "model_files": [
+    "als_model.pkl",
+    "svd_model.pkl",
+    "ncf_model.keras"
+  ],
+  "weight_search": "Optuna TPESampler",
+  "optuna_n_trials": 20,
+  "optuna_direction": "maximize",
+  "optuna_target": "ndcg@10 on val",
+  "best_raw_weights": {
+    "w_als": 0.7656747388023182,
+    "w_svd": 0.014228398457654001,
+    "w_ncf": 0.2820082604410853
+  },
+  "best_norm_weights": {
+    "w_als": 0.7210344859843627,
+    "w_svd": 0.013398856522735515,
+    "w_ncf": 0.26556665749290176
+  },
+  "best_val_ndcg10": 0.7868622120862507,
+  "baseline_val_ndcg10": 0.7145014724146111,
+  "score_normalization": "minmax per user per model",
+  "relevance_threshold": 3.5,
+  "k_values": [
+    5,
+    10,
+    20
+  ],
+  "optuna_search_time_sec": 459.1512289047241,
+  "inference_time_test_sec": 20.656768560409546
+}
