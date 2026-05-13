@@ -1,24 +1,3 @@
-"""
-Streamlit-приложение для демонстрации рекомендательной системы фильмов.
-
-Архитектура:
-    - 6 вкладок в боковой панели (radio): Главная, EDA, Сравнение моделей,
-      Детали моделей, Получить рекомендации, Метрики и теория.
-    - На старте через st.status прелоадим ВСЕ артефакты в кеш
-      (после первой загрузки переключение между вкладками мгновенное).
-    - Лёгкие артефакты (метаданные, маппинги, метрики) кешируются через
-      @st.cache_data; обученные модели - через @st.cache_resource.
-
-Запуск из корня проекта:
-    streamlit run streamlit/app.py
-
-Стилистика интерфейса:
-    - Русский язык.
-    - Без эмодзи и спецсимволов (->, >=, <= вместо стрелочек/неравенств).
-    - Чистые текстовые карточки с цветными бейджами жанров.
-    - Графики - Plotly (интерактив) + готовые PNG/HTML из models/.
-"""
-
 from __future__ import annotations
 
 import json
@@ -31,21 +10,13 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
-# ---------------------------------------------------------------------------
-# Базовые пути и константы проекта
-# ---------------------------------------------------------------------------
-# Приложение запускается из корня проекта командой `streamlit run streamlit/app.py`.
-# Поэтому корень - это родитель папки streamlit.
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DATA_RAW = PROJECT_ROOT / "data" / "raw"
 DATA_PROC = PROJECT_ROOT / "data" / "processed"
 MODELS_DIR = PROJECT_ROOT / "models"
 
-# Бинарный порог релевантности (был использован при обучении / валидации).
 RELEVANCE_THRESHOLD = 3.5
 
-# Цвета жанровых бейджей (фиксированные, чтобы один и тот же жанр всегда
-# выглядел одинаково).
 GENRE_COLORS = {
     "Action": "#E24B4A",        "Adventure": "#EF9F27",
     "Animation": "#7F77DD",     "Children": "#F4C0D1",
@@ -84,8 +55,6 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Минимальный кастомный CSS: аккуратные карточки, мягкие тени, отступы.
-# Сознательно не делаем тёмную тему - пусть применяется системная.
 _CUSTOM_CSS = """
 <style>
     /* Уменьшаем верхний паддинг главного контейнера */
@@ -144,16 +113,6 @@ _CUSTOM_CSS = """
 </style>
 """
 st.markdown(_CUSTOM_CSS, unsafe_allow_html=True)
-
-# ---------------------------------------------------------------------------
-# Классы моделей, сериализованных через joblib
-# ---------------------------------------------------------------------------
-# joblib.load восстанавливает объект по имени класса, поэтому класс
-# PopularityRecommender и GlobalMeanModel должны быть доступны
-# в текущем модуле, иначе восстановление падает с AttributeError.
-# Дублируем определения из ноутбука 04 - этого достаточно для unpickle.
-
-
 class GlobalMeanModel:
     """Baseline: предсказывает глобальное среднее train-рейтинга."""
 
@@ -169,8 +128,6 @@ class GlobalMeanModel:
 
 
 class PopularityRecommender:
-    """Top-N рекомендатель на основе сглаженной популярности (Bayesian
-    average). Класс определён здесь для совместимости с joblib.load."""
 
     def __init__(self, m: float = 10.0):
         self.m = m
@@ -207,10 +164,7 @@ class PopularityRecommender:
         return result
 
 
-# ---------------------------------------------------------------------------
-# Жёсткий справочник времени обучения каждой модели (берётся из ноутбуков).
-# В *_metrics.json эти значения не сохранялись, поэтому держим их рядом.
-# ---------------------------------------------------------------------------
+
 TRAIN_TIME_SECONDS = {
     "popularity": 240.0,    # 4 мин - grid search по m
     "svd":        300.0,    # 5 мин - Optuna 30 trials + финальный фит
@@ -222,12 +176,6 @@ TRAIN_TIME_SECONDS = {
 }
 
 
-# ---------------------------------------------------------------------------
-# Канонический набор top-N метрик и алиасы.
-# В JSON-файлах разных моделей ключи писались по-разному
-# (hit_rate@10 vs hitrate@10, метрики иногда вложены в test).
-# Нормализатор разворачивает эту структуру.
-# ---------------------------------------------------------------------------
 _METRIC_ALIASES = {
     "hit_rate@5":  "hitrate@5",
     "hit_rate@10": "hitrate@10",
@@ -242,10 +190,6 @@ _METRIC_ALIASES = {
 
 
 def _normalize_metric_keys(d: dict) -> dict:
-    """Приводит ключи метрик к единому виду (hit_rate@10 -> hitrate@10).
-
-    Дополнительно склеивает несколько распространённых вариантов написания.
-    """
     out = {}
     for k, v in d.items():
         if not isinstance(v, (int, float)):
@@ -256,22 +200,9 @@ def _normalize_metric_keys(d: dict) -> dict:
 
 
 def _flatten_metrics_json(raw: dict, model_key: str) -> dict:
-    """Разворачивает структуру *_metrics.json в плоский словарь
-    с каноническими ключами метрик на test.
-
-    Поддерживаем несколько схем:
-      A) raw = {"test": {"ndcg@10": ..., ...}, "val": {...}} -> берём test
-      B) raw = {"ndcg@10": ..., ...}                          -> берём как есть
-      C) raw = {"popularity": {"test": {...}}, "global_mean": ...}
-         (формат из ноутбука 04) -> берём popularity.test
-      D) raw = {"final": {"test_topn": {...}, "test_rating": {...}}}
-         (так пишут ноутбуки 5-10: SVD, KNN, LightGBM, ALS, NCF, ансамбль)
-         -> склеиваем test_topn + test_rating в плоский test
-    """
     if not raw:
         return {}
 
-    # Вариант C: popularity_metrics.json содержит и global_mean, и popularity.
     if model_key == "popularity":
         pop_block = raw.get("popularity") or raw
         if isinstance(pop_block, dict):
@@ -290,7 +221,6 @@ def _flatten_metrics_json(raw: dict, model_key: str) -> dict:
             return _normalize_metric_keys(gm_block)
         return {}
 
-    # Варианты A / B / D - универсально.
     if "test" in raw and isinstance(raw["test"], dict):
         # A: уже плоский test на верхнем уровне.
         flat = _normalize_metric_keys(raw["test"])
@@ -308,20 +238,15 @@ def _flatten_metrics_json(raw: dict, model_key: str) -> dict:
         # B: плоский словарь с метриками на верхнем уровне.
         flat = _normalize_metric_keys(raw)
 
-    # RMSE/MAE иногда лежат в отдельном rating_block, иногда сразу в test.
-    # Если их нет в плоском результате - попробуем достать из верхнего уровня.
     for rkey in ("rmse", "mae"):
         if rkey not in flat and isinstance(raw.get(rkey), (int, float)):
             flat[rkey] = raw[rkey]
     return flat
 
 
-# ---------------------------------------------------------------------------
-# Утилиты безопасной загрузки и форматирования
-# ---------------------------------------------------------------------------
 
 def _safe_read_json(path: Path) -> dict:
-    """Читает JSON; при отсутствии файла или ошибке - пустой dict."""
+
     try:
         with open(path, "r", encoding="utf-8") as fh:
             return json.load(fh)
@@ -330,21 +255,17 @@ def _safe_read_json(path: Path) -> dict:
 
 
 def _safe_read_pickle(path: Path):
-    """Читает pickle через joblib. В случае ошибки - None (плюс показываем
-    предупреждение в UI). joblib умеет совместимо читать numpy/scipy-объекты."""
     import joblib
     try:
         return joblib.load(path)
     except Exception as exc:
         st.warning(
             f"Не удалось загрузить {path.name}: {type(exc).__name__}. "
-            "Соответствующая модель будет недоступна."
         )
         return None
 
 
 def _safe_read_parquet(path: Path) -> Optional[pd.DataFrame]:
-    """Читает parquet; при ошибке возвращает None."""
     try:
         return pd.read_parquet(path)
     except Exception:
@@ -352,7 +273,6 @@ def _safe_read_parquet(path: Path) -> Optional[pd.DataFrame]:
 
 
 def _safe_read_csv(path: Path, **kwargs) -> Optional[pd.DataFrame]:
-    """Читает csv; при ошибке возвращает None."""
     try:
         return pd.read_csv(path, **kwargs)
     except Exception:
@@ -360,7 +280,6 @@ def _safe_read_csv(path: Path, **kwargs) -> Optional[pd.DataFrame]:
 
 
 def fmt_int(x: Any) -> str:
-    """Форматирует целое число с пробелами как разделителями тысяч."""
     try:
         return f"{int(x):,}".replace(",", " ")
     except Exception:
@@ -368,7 +287,6 @@ def fmt_int(x: Any) -> str:
 
 
 def fmt_float(x: Any, digits: int = 3) -> str:
-    """Форматирует число с фиксированным числом знаков; '-' для NaN/None."""
     try:
         if x is None or (isinstance(x, float) and np.isnan(x)):
             return "-"
@@ -378,7 +296,6 @@ def fmt_float(x: Any, digits: int = 3) -> str:
 
 
 def parse_year_from_title(title: str) -> Optional[int]:
-    """Извлекает год из строки 'Toy Story (1995)' -> 1995."""
     if not isinstance(title, str):
         return None
     s = title.strip()
@@ -390,7 +307,6 @@ def parse_year_from_title(title: str) -> Optional[int]:
 
 
 def strip_year(title: str) -> str:
-    """Убирает '(1995)' из хвоста."""
     if not isinstance(title, str):
         return ""
     s = title.strip()
@@ -400,7 +316,6 @@ def strip_year(title: str) -> str:
 
 
 def genres_to_list(g: Any) -> list[str]:
-    """Преобразует строку жанров 'Action|Drama' в список."""
     if isinstance(g, list):
         return [x for x in g if x]
     if not isinstance(g, str):
@@ -409,7 +324,6 @@ def genres_to_list(g: Any) -> list[str]:
 
 
 def render_genre_badges(genres: list[str]) -> str:
-    """Возвращает HTML с цветными бейджами жанров."""
     out = []
     for g in genres:
         color = GENRE_COLORS.get(g, "#5F5E5A")
@@ -420,7 +334,6 @@ def render_genre_badges(genres: list[str]) -> str:
 
 
 def render_stars(rating: float) -> str:
-    """Текстовый звёздочный рейтинг по округлению до 0.5."""
     if rating is None or (isinstance(rating, float) and np.isnan(rating)):
         return ""
     rating = max(0.0, min(5.0, float(rating)))
@@ -430,17 +343,6 @@ def render_stars(rating: float) -> str:
     # Используем простые символы, не эмодзи. Юникод-звёздочки допустимы.
     return "★" * full + ("½" if half else "") + "☆" * empty
 
-
-
-# ---------------------------------------------------------------------------
-# Кешируемые загрузчики данных и моделей
-# ---------------------------------------------------------------------------
-# Стратегия:
-#   * @st.cache_data       - для всего, что можно безопасно копировать
-#                            (DataFrame, dict, numpy-массивы).
-#   * @st.cache_resource   - для тяжёлых объектов с состоянием
-#                            (модели Surprise, ALS, Keras, LightGBM).
-# ---------------------------------------------------------------------------
 
 @st.cache_data(show_spinner=False)
 def load_ratings() -> Optional[pd.DataFrame]:
@@ -460,7 +362,6 @@ def load_movies_raw() -> Optional[pd.DataFrame]:
 
 @st.cache_data(show_spinner=False)
 def load_movies_enriched() -> Optional[pd.DataFrame]:
-    """Обогащённые метаданные. Если файла нет - fallback на movies.csv."""
     df = _safe_read_parquet(DATA_PROC / "movies_enriched.parquet")
     if df is None:
         df = load_movies_raw()
@@ -519,13 +420,6 @@ def load_id_maps() -> dict:
 
 @st.cache_data(show_spinner=False)
 def load_all_metrics() -> dict[str, dict]:
-    """Читает *_metrics.json для каждой модели и нормализует ключи.
-
-    После нормализации каждый внутренний словарь содержит метрики на test
-    с каноническими именами (ndcg@10, precision@10, hitrate@10, ...).
-    Дополнительно подмешивается train_time_seconds из справочника
-    TRAIN_TIME_SECONDS (в JSON оно не сохранялось).
-    """
     out = {}
     metric_files = {
         "popularity": "popularity_metrics.json",
@@ -573,8 +467,6 @@ def load_best_model_decision() -> dict:
     return _safe_read_json(MODELS_DIR / "best_model_decision.json")
 
 
-# --- Сами модели (cache_resource - не сериализуем) -------------------------
-
 @st.cache_resource(show_spinner=False)
 def load_popularity_model():
     return _safe_read_pickle(MODELS_DIR / "popularity_model.pkl")
@@ -597,7 +489,6 @@ def load_knn_model():
 
 @st.cache_resource(show_spinner=False)
 def load_lightgbm_model():
-    # Сначала пробуем общий lightgbm_model.pkl; если его нет - regressor.
     for fname in ("lightgbm_model.pkl", "lightgbm_regressor.pkl",
                   "lightgbm_ranker.pkl"):
         p = MODELS_DIR / fname
@@ -613,14 +504,11 @@ def load_als_model():
 
 @st.cache_resource(show_spinner=False)
 def load_ncf_model():
-    """NCF - Keras-модель. Загружаем с compile=False, чтобы избежать
-    ошибок из-за отсутствующих кастомных метрик."""
     try:
-        import tensorflow as tf  # отложенный импорт - тяжёлая зависимость
+        import tensorflow as tf 
         p = MODELS_DIR / "ncf_model.keras"
         if not p.exists():
             return None
-        # safe_mode=False позволяет загружать модели с lambda-слоями.
         model = tf.keras.models.load_model(str(p), compile=False)
         return model
     except Exception as exc:
@@ -633,8 +521,6 @@ def load_ncf_model():
 
 @st.cache_resource(show_spinner=False)
 def load_user_item_sparse():
-    """user_item_train.npz - sparse CSR (n_users x n_items) с бинарной/
-    вещественной матрицей предпочтений. Нужен для ALS-инференса."""
     try:
         from scipy import sparse
         p = DATA_PROC / "user_item_train.npz"
@@ -649,27 +535,13 @@ def load_user_item_sparse():
 def load_preprocessing_meta() -> dict:
     return _safe_read_json(DATA_PROC / "preprocessing_meta.json")
 
-
-
-# ---------------------------------------------------------------------------
-# Функции рекомендаций (инференс)
-# ---------------------------------------------------------------------------
-# Соглашения:
-#   * raw_id - идентификатор как в CSV (userId, movieId).
-#   * idx    - внутренний индекс (как в train sparse / в model.trainset).
-#   * Все функции возвращают list[tuple[movieId, score]], отсортированный
-#     по убыванию score, длиной top_n, БЕЗ фильмов из exclude_movie_ids.
-# ---------------------------------------------------------------------------
-
 def _topk_from_scores(
     scores: np.ndarray,
     inv_movie_id_map: dict,
     exclude_idx: set[int],
     top_n: int,
 ) -> list[tuple[int, float]]:
-    """Берёт массив скоров (по внутренним idx фильмов), исключает уже
-    оценённые и возвращает топ-N (raw_movieId, score)."""
-    # Маскируем исключённые фильмы.
+
     if exclude_idx:
         ex = np.fromiter(exclude_idx, dtype=int)
         ex = ex[(ex >= 0) & (ex < scores.shape[0])]
@@ -696,8 +568,6 @@ def recommend_popularity(
     top_n: int,
     m: int = 200,
 ) -> list[tuple[int, float]]:
-    """Bayesian-average popularity baseline. Не зависит от пользователя -
-    подходит как fallback для cold-start."""
     if movie_stats is None or movie_stats.empty:
         return []
     C = float(movie_stats["avg_rating"].mean())
@@ -719,7 +589,6 @@ def recommend_als_existing_user(
     exclude_movie_ids: set[int],
     top_n: int,
 ) -> list[tuple[int, float]]:
-    """ALS-рекомендации для существующего пользователя через user_factors."""
     if als_model is None:
         return []
     inv_movie_id_map = id_maps["inv_movie_id_map"]
@@ -748,16 +617,6 @@ def recommend_als_new_user(
     user_ratings: dict[int, float],
     top_n: int,
 ) -> list[tuple[int, float]]:
-    """ALS-fold-in для нового пользователя.
-
-    Реализация:
-        1. Берём item-факторы по фильмам из истории.
-        2. Веса w_i = max(rating_i - 3.0, 0)  - только "понравившиеся".
-           (для implicit ALS отрицательная обратная связь не имеет смысла -
-           она моделируется отсутствием взаимодействия).
-        3. user_vector = (Y_subset.T @ w) / (sum(w) + eps).
-        4. scores = item_factors @ user_vector.
-    """
     if als_model is None or not user_ratings:
         return []
     movie_id_map = id_maps["movie_id_map"]
@@ -791,12 +650,7 @@ def recommend_svd_existing_user(
     exclude_movie_ids: set[int],
     top_n: int,
 ) -> list[tuple[int, float]]:
-    """SVD из surprise: векторизованный расчёт скоров по всем фильмам.
 
-    Вместо медленного цикла с svd_model.predict(uid, iid) умножаем
-    матрицу qi на вектор pu пользователя - это математически эквивалентно
-    предсказанию SVD: `r_hat = mu + bu + bi + pu . qi`.
-    """
     if svd_model is None:
         return []
     try:
@@ -836,19 +690,7 @@ def recommend_svd_new_user(
     movie_stats: pd.DataFrame,
     top_n: int,
 ) -> list[tuple[int, float]]:
-    """Приближённый fold-in для SVD из surprise.
 
-    Surprise SVD хранит:
-        model.trainset.global_mean - mu
-        model.bu[u_inner], model.bi[i_inner] - смещения
-        model.pu[u_inner], model.qi[i_inner] - факторы
-
-    Для нового пользователя мы не имеем bu и pu. Аппроксимация:
-        - bu_new = mean(user_ratings) - mu       (личное смещение)
-        - pu_new = sum_i (r_i - mu - bi_i) * qi_i / (||qi||^2 + lambda)
-          - то есть OLS-фит факторов из имеющихся оценок.
-    Затем pred(u, i) = mu + bu_new + bi_i + pu_new . qi_i.
-    """
     if svd_model is None or not user_ratings:
         return []
     try:
@@ -908,11 +750,7 @@ def recommend_ncf_existing_user(
     exclude_movie_ids: set[int],
     top_n: int,
 ) -> list[tuple[int, float]]:
-    """NCF (NeuMF) для существующего пользователя.
 
-    Делаем один batch-predict по всем кандидатам. Кешируем результат
-    в session_state по userId, чтобы не пересчитывать при изменении top_n.
-    """
     if ncf_model is None:
         return []
     user_id_map = id_maps["user_id_map"]
@@ -962,12 +800,7 @@ def recommend_ensemble_existing_user(
     top_n: int,
     weights: dict[str, float],
 ) -> list[tuple[int, float]]:
-    """Линейная комбинация рангов/скоров от ALS, SVD и NCF.
 
-    Чтобы корректно складывать модели разной природы (implicit ALS даёт
-    скоры в одной шкале, SVD - предсказанный рейтинг 0.5..5, NCF - сигмоид
-    вероятность), переводим каждый набор скоров в RANK-нормализованные
-    значения [0, 1] и взвешиваем."""
     movie_id_map = id_maps["movie_id_map"]
     inv_movie_id_map = id_maps["inv_movie_id_map"]
     user_id_map = id_maps["user_id_map"]
@@ -1045,8 +878,7 @@ def recommend_ensemble_new_user(
     top_n: int,
     weights: dict[str, float],
 ) -> list[tuple[int, float]]:
-    """Ансамбль для нового пользователя - только ALS + SVD (NCF без user
-    эмбеддинга в cold-start не используется, как мы и решили)."""
+
     movie_id_map = id_maps["movie_id_map"]
     inv_movie_id_map = id_maps["inv_movie_id_map"]
     n_items = len(inv_movie_id_map)
@@ -1118,10 +950,7 @@ def recommend_ensemble_new_user(
 
 
 def _to_rank01(scores: np.ndarray) -> np.ndarray:
-    """Преобразует массив скоров в нормированные ранги [0, 1].
 
-    -inf -> 0 (фильмы, для которых модель ничего не предсказала).
-    """
     n = scores.shape[0]
     out = np.zeros(n, dtype=np.float32)
     finite_mask = np.isfinite(scores)
@@ -1136,18 +965,8 @@ def _to_rank01(scores: np.ndarray) -> np.ndarray:
     return out
 
 
-
-# ---------------------------------------------------------------------------
-# Прелоад всех артефактов на старте (один раз через st.status)
-# ---------------------------------------------------------------------------
-
 def warm_up_all_artifacts() -> dict:
-    """Прогревает кеш всех функций загрузки.
 
-    Возвращает словарь со ссылками на основные DataFrame-ы и маппинги,
-    плюс bool-флаги о том, какие модели реально доступны (нужно для UI -
-    серый чекмарк в боковой панели).
-    """
     state: dict = {}
     steps = [
         ("Загружаю ratings.csv",            lambda: load_ratings()),

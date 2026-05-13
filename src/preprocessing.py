@@ -1,4 +1,3 @@
-"""Функции предобработки данных."""
 import re
 import pandas as pd
 
@@ -6,7 +5,6 @@ YEAR_PATTERN = re.compile(r'\((\d{4})\)\s*$')
 
 
 def extract_year_from_title(title: str) -> int | None:
-    """Извлечь год выпуска из названия фильма формата 'Name (YYYY)'."""
     if not isinstance(title, str):
         return None
     match = YEAR_PATTERN.search(title.strip())
@@ -14,7 +12,6 @@ def extract_year_from_title(title: str) -> int | None:
 
 
 def ensure_min_train_per_user(train, val, test, min_per_user: int = 4):
-    """Гарантировать >= min_per_user оценок в train для каждого пользователя из объединённого датасета."""
     all_users = pd.concat([train, val, test])['userId'].unique()
     train = train.copy()
     val = val.copy()

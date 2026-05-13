@@ -1,4 +1,3 @@
-"""Хелперы для загрузки обработанных артефактов проекта."""
 from pathlib import Path
 
 import joblib
@@ -19,7 +18,6 @@ MODELS_DIR = PROJECT_ROOT / 'models'
 
 
 def load_splits():
-    """Загрузить train, val, test и cold_start_eval."""
     return {
         'train': pd.read_parquet(PROCESSED_DIR / 'train.parquet'),
         'val': pd.read_parquet(PROCESSED_DIR / 'val.parquet'),
@@ -29,7 +27,6 @@ def load_splits():
 
 
 def load_features():
-    """Загрузить признаки фильмов, пользователей, жанров."""
     return {
         'movies': pd.read_parquet(PROCESSED_DIR / 'movie_features.parquet'),
         'users': pd.read_parquet(PROCESSED_DIR / 'user_features.parquet'),
@@ -39,7 +36,6 @@ def load_features():
 
 
 def load_id_maps():
-    """Загрузить ID-мапы (userId/movieId <-> internal idx)."""
     return {
         'user_id_map': joblib.load(MODELS_DIR / 'user_id_map.pkl'),
         'movie_id_map': joblib.load(MODELS_DIR / 'movie_id_map.pkl'),
@@ -49,12 +45,10 @@ def load_id_maps():
 
 
 def load_user_item_matrix():
-    """Загрузить sparse user-item матрицу train."""
     return sparse.load_npz(PROCESSED_DIR / 'user_item_train.npz')
 
 
 def load_tag_features():
-    """Загрузить sparse TF-IDF матрицу тегов и порядок movieId."""
     return {
         'matrix': sparse.load_npz(PROCESSED_DIR / 'tag_features.npz'),
         'order': pd.read_parquet(PROCESSED_DIR / 'tag_movie_order.parquet'),
@@ -62,7 +56,6 @@ def load_tag_features():
 
 
 def load_encoders():
-    """Загрузить обученные энкодеры и скейлеры."""
     return {
         'genre_encoder': joblib.load(MODELS_DIR / 'genre_encoder.pkl'),
         'tfidf_tags': joblib.load(MODELS_DIR / 'tfidf_tags.pkl'),
